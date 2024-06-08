@@ -25,5 +25,9 @@ DATABASES = {
     DB_EVENT_STORE: {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'event_store.sqlite3',
+        "TEST": {
+            "DEPENDENCIES": [],
+            'NAME': BASE_DIR / 'event_store2.sqlite3',
+        },
     },
 }
