@@ -9,5 +9,5 @@ class ListingEventStore(EventStoreModel):
 
 @receiver(post_save, sender=ListingEventStore)
 def my_handler(sender, **kwargs): 
-    if sender.event_type == EVENT_LISTING_CREATED:
-        listing_created.send(sender=sender, **kwargs)
+    if kwargs["instance"].event_type == EVENT_LISTING_CREATED:
+        listing_created.send(sender=sender, instance=kwargs["instance"])
