@@ -11,7 +11,7 @@ from listing_management.settings.constants import DB_EVENT_STORE, DB_READ_MODEL,
 
 @pytest.mark.django_db
 class TestCreateListing(TestCase):
-    databases = {DB_EVENT_STORE}
+    databases = {DB_EVENT_STORE, DB_READ_MODEL}
 
     def test_create_listing(self):
         payload = CreateListing(name="My Listing", description="Lorem Ipsum")
@@ -40,7 +40,7 @@ class TestHandleListingCreatedEvent(TestCase):
 
         listing_created.send(sender=ListingEventStore, instance=instance)
 
-        listing = Listings.objects.get(listing_id=instance.stream_id)
+        listing = Listings.objects.get(listing_uuid=instance.stream_id)
 
         assert listing.title == payload.name
         assert listing.description == payload.description
