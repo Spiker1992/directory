@@ -11,15 +11,16 @@ from listing_management.settings.constants import DB_EVENT_STORE, DB_READ_MODEL,
 
 @pytest.mark.django_db
 class TestCreateListing(TestCase):
-    databases = {DB_EVENT_STORE, DB_READ_MODEL}
+    databases = {DB_EVENT_STORE}
 
     def test_create_listing(self):
+        listing_created.mock()
         payload = CreateListing(name="My Listing", description="Lorem Ipsum")
 
-        with catch_signal(listing_created) as signal:
-            stream_id = create_listing(payload)
+        stream_id = create_listing(payload)
 
-        signal.assert_called_once()
+        listing_created.send.assert_called_once()
+        listing_created.unmock()
         
         event = ListingEventStore.objects.get(stream_id=stream_id)
 
