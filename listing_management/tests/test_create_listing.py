@@ -19,12 +19,12 @@ class TestCreateListing(TestCase):
 
         stream_id = create_listing(payload)
 
-        listing_created.send.assert_called_once()
-        listing_created.unmock()
         
         event = ListingEventStore.objects.get(stream_id=stream_id)
 
         assert event.event_payload == asdict(payload)
+        listing_created.send.assert_called_with(instance=event, sender=ListingEventStore)
+        listing_created.unmock()
 
 
 @pytest.mark.django_db
