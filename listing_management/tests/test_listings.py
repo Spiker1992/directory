@@ -2,10 +2,11 @@ from dataclasses import asdict
 import uuid
 from django.test import TestCase
 from listing_management.commands.create_listing import CreateListing, create_listing
+from listing_management.commands.retrieve_listing import retrieve_listing
 from listing_management.event_stores.listing import ListingEventStore
+from listing_management.factory import ListingFactory
 from listing_management.read_models.listings import Listings
 from listing_management.signals import listing_created
-from listing_management.tests.utils import catch_signal
 import pytest
 from listing_management.settings.constants import DB_EVENT_STORE, DB_READ_MODEL, EVENT_LISTING_CREATED
 
@@ -18,13 +19,27 @@ class TestCreateListing(TestCase):
         payload = CreateListing(name="My Listing", description="Lorem Ipsum")
 
         stream_id = create_listing(payload)
-
-        
         event = ListingEventStore.objects.get(stream_id=stream_id)
 
         assert event.event_payload == asdict(payload)
         listing_created.send.assert_called_with(instance=event, sender=ListingEventStore)
         listing_created.unmock()
+
+
+@pytest.mark.django_db
+class TestRetrieveListing(TestCase):
+    databases = {DB_READ_MODEL}
+
+    def test_retrieve_listing(self):
+        # Given
+        expected: Listings = ListingFactory()
+
+        # When
+        actual = retrieve_listing(expected.listing_uuid)
+
+        # Then
+        assert actual.title == expected.title 
+        assert actual.description == expected.description
 
 
 @pytest.mark.django_db
