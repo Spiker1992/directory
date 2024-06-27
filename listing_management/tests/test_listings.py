@@ -5,7 +5,7 @@ from listing_management.commands.create_listing import CreateListing, create_lis
 from listing_management.commands.retrieve_listing import retrieve_listing
 from listing_management.event_stores.listing import ListingEventStore
 from listing_management.factory import ListingFactory
-from listing_management.read_models.listings import Listings
+from listing_management.read_models.listings import Listing
 from listing_management.signals import listing_created
 import pytest
 from listing_management.settings.constants import DB_EVENT_STORE, DB_READ_MODEL, EVENT_LISTING_CREATED
@@ -32,7 +32,7 @@ class TestRetrieveListing(TestCase):
 
     def test_retrieve_listing(self):
         # Given
-        expected: Listings = ListingFactory()
+        expected: Listing = ListingFactory()
 
         # When
         actual = retrieve_listing(expected.listing_uuid)
@@ -56,7 +56,7 @@ class TestHandleListingCreatedEvent(TestCase):
 
         listing_created.send(sender=ListingEventStore, instance=instance)
 
-        listing = Listings.objects.get(listing_uuid=instance.stream_id)
+        listing = Listing.objects.get(listing_uuid=instance.stream_id)
 
         assert listing.title == payload.name
         assert listing.description == payload.description
