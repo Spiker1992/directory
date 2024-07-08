@@ -11,11 +11,11 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RemoveField(
-            model_name='listings',
+            model_name='listing',
             name='id',
         ),
         migrations.AddField(
-            model_name='listings',
+            model_name='listing',
             name='listing_uuid',
             field=models.UUIDField(default=uuid.uuid4(), editable=False, primary_key=True, serialize=False),
             preserve_default=False,
