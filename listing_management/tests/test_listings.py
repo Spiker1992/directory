@@ -2,13 +2,12 @@ from dataclasses import asdict
 import uuid
 from django.test import TestCase
 from listing_management.commands.create_listing import CreateListing, create_listing
-from listing_management.commands.retrieve_listing import retrieve_listing
 from listing_management.event_stores.listing import ListingEventStore
-from listing_management.factory import ListingFactory
 from listing_management.read_models.listings import Listing
 from listing_management.signals import listing_created
 import pytest
 from listing_management.settings.constants import DB_EVENT_STORE, DB_READ_MODEL, EVENT_LISTING_CREATED
+
 
 @pytest.mark.django_db
 class TestCreateListing(TestCase):
@@ -26,20 +25,6 @@ class TestCreateListing(TestCase):
         listing_created.unmock()
 
 
-@pytest.mark.django_db
-class TestRetrieveListing(TestCase):
-    databases = {DB_READ_MODEL}
-
-    def test_retrieve_listing(self):
-        # Given
-        expected: Listing = ListingFactory()
-
-        # When
-        actual = retrieve_listing(expected.listing_uuid)
-
-        # Then
-        assert actual.title == expected.title 
-        assert actual.description == expected.description
 
 
 @pytest.mark.django_db

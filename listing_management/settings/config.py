@@ -12,7 +12,7 @@ DATABASE_MAPPING = {
         "listingeventstore",
     ],
     DB_READ_MODEL: [
-        "listings",
+        "listing",
     ]
 } 
 
